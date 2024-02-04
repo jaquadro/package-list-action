@@ -348,7 +348,7 @@ namespace VRC.PackageManagement.Automation
 
         async Task<VRCPackageManifest> HashZipAndReturnManifest(string url)
         {
-            using (var response = await Http.GetAsync(url))
+            using (var response = await GetAuthenticatedResponse(url))
             {
                 if (!response.IsSuccessStatusCode)
                 {
