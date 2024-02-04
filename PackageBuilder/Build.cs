@@ -356,7 +356,7 @@ namespace VRC.PackageManagement.Automation
             {
                 if (!response.IsSuccessStatusCode)
                 {
-                    Assert.Fail($"Could not find valid zip file at {url}");
+                    Assert.Fail($"Could not find valid zip file at {url}, using token = {ReadPackageToken != null && ReadPackageToken.Length > 0}");
                 }
 
                 // Get manifest or return null
