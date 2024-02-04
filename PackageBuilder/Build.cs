@@ -38,6 +38,10 @@ namespace VRC.PackageManagement.Automation
         const string PackageListingPublishFilename = "index.json";
         const string WebPageAppFilename = "app.js";
 
+        [Parameter("Read Package Token")]
+        [Secret]
+        string ReadPackageToken = "";
+
         [Parameter("Directory to save index into")] 
         AbsolutePath ListPublishDirectory = RootDirectory / "docs";
 
@@ -348,7 +352,7 @@ namespace VRC.PackageManagement.Automation
 
         async Task<VRCPackageManifest> HashZipAndReturnManifest(string url)
         {
-            using (var response = await GetAuthenticatedResponse(url))
+            using (var response = await GetAuthenticatedResponse(url, ReadPackageToken))
             {
                 if (!response.IsSuccessStatusCode)
                 {
@@ -397,8 +401,11 @@ namespace VRC.PackageManagement.Automation
             }
         }
 
-        async Task<HttpResponseMessage> GetAuthenticatedResponse(string url)
+        async Task<HttpResponseMessage> GetAuthenticatedResponse(string url, string token = null)
         {
+            if (token == null)
+                token = GitHubActions.Token;
+                
             using (var requestMessage =
                    new HttpRequestMessage(HttpMethod.Get, url))
             {
@@ -406,7 +413,7 @@ namespace VRC.PackageManagement.Automation
                 if (IsServerBuild)
                 {
                     requestMessage.Headers.Authorization =
-                        new AuthenticationHeaderValue("Bearer", GitHubActions.Token);
+                        new AuthenticationHeaderValue("Bearer", token);
                 }
 
                 return await Http.SendAsync(requestMessage);
