@@ -328,7 +328,7 @@ namespace VRC.PackageManagement.Automation
             
             foreach (Octokit.Release release in releases)
             {
-                result.AddRange(release.Assets.Where(asset => asset.Name.EndsWith(".zip")).Select(asset => asset.BrowserDownloadUrl));
+                result.AddRange(release.Assets.Where(asset => asset.Name.EndsWith(".zip")).Select(asset => asset.Url));
             }
 
             return result;
